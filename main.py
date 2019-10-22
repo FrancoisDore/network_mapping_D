@@ -11,8 +11,9 @@ if __name__ == '__main__':
         results.append(list(map(lambda x: evaluate_solution(data, x),
                                 [
                                     random_solution(data),
+                                    spiral_solution(data),
                                     gluttonous_solution(data, mode="random"),
                                     gluttonous_solution(data, mode="degree"),
                                     gluttonous_solution(data, mode="neighbours"),
                                 ])))
-    print_matrix(results, ["Random","Glutton (rdm)","Glutton (deg)","Glutton (ngh)"],files)
+    print_matrix(results, ["Random", "Spiral", "Glutton (rdm)", "Glutton (deg)", "Glutton (ngh)"], files)

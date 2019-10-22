@@ -4,7 +4,7 @@ import operator
 
 def extract_data(filename):
     """
-    from the file given in input, generate the structure of the graph under the form of a dictionary which links a node
+    From the file given in input, generate the structure of the graph under the form of a dictionary which links a node
     to a list of all his neighbours
     """
     with open(filename, "r") as file:
@@ -20,7 +20,7 @@ def extract_data(filename):
 
 def display_edges(data):
     """
-    print a graph structure
+    Print a graph structure
     """
     for i in range(len(data)):
         print("{}: {}".format(i, data[i]))
@@ -28,7 +28,7 @@ def display_edges(data):
 
 def print_matrix(data, xlabels, ylabels):
     """
-    display a matrix as tabular data
+    Display a matrix as tabular data
     """
     row_format = "{:>15}" * (len(xlabels) + 1)
     print(row_format.format("", *xlabels))
@@ -38,22 +38,22 @@ def print_matrix(data, xlabels, ylabels):
 
 def is_valid(data, solution):
     """
-    return True if a solution is valid given a graph structure, False otherwise
+    Return True if a solution is valid given a graph structure, False otherwise
     """
     return not any([solution[i1] == solution[i2] for i1 in data for i2 in data[i1] if i2 > i1])
 
 
 def dist(c1, c2):
     """
-    compute the euclidean distance of two coordinates given under the of two tuples
+    Compute the euclidean distance of two coordinates given under the of two tuples
     """
     return abs(c1[0] - c2[0]) + abs(c1[1] - c2[1])
 
 
 def vertices_by_encounters(data):
     """
-    return a list of all the nodes of the graph
-    vertices are sorted by both connectivity and degree
+    Return a list of all the nodes of the graph
+    Vertices are sorted by both connectivity and degree
     """
     res = []
     vertices = sorted(data.keys(), key=lambda x: -len(data[x]))
@@ -73,7 +73,7 @@ def vertices_by_encounters(data):
 
 def format_solution(solution):
     """
-    given a solution under the form of a dictionary return, translate it to positive coordinates and format it in a list
+    Given a solution under the form of a dictionary return, translate it to positive coordinates and format it in a list
     """
     min_x, min_y = [min(s[c] for s in solution.values()) for c in range(2)]
     return [tuple(map(operator.sub, solution[i], (min_x, min_y))) for i in range(len(solution))]
@@ -81,7 +81,7 @@ def format_solution(solution):
 
 def evaluate_partial_solution(data, solution):
     """
-    compute the deficit of a partial solution
+    Compute the deficit of a partial solution
     (given that the solution is partial, the variable solution is a dictionary and not a list)
     """
     w = max([max([s[c] for s in solution.values()]) - min([s[c] for s in solution.values()]) for c in range(2)]) ** 2
@@ -93,12 +93,12 @@ def evaluate_partial_solution(data, solution):
 
 def evaluate_solution(data, solution):
     """
-    compute the total deficit of a solution
+    Compute the total deficit of a solution
     :param data: the structure of our graph
     :param solution: a list of the coordinates of each vertices
     :return: the points obtained following the rules given in the subject
     """
-    w = max([max(s[c] for s in solution) for c in range(2)]) ** 2
+    w = max([max(s[c] for s in solution) - min(s[c] for s in solution) for c in range(2)]) ** 2
     e = sum([2 * ((dist(solution[i1], solution[i2]) - 1) ** 2) for i1 in data for i2 in data[i1] if i2 > i1])
     s = sum(list(map(lambda x: 3 * ((x - 1) ** 2), Counter(solution).values())))
     return w + e + s

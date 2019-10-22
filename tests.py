@@ -27,6 +27,12 @@ class SolutionValidator(unittest.TestCase):
             s = random_solution(instance)
             self.assertTrue(is_valid(instance, s))
 
+    def test_pseudo_linear_solutions(self):
+        for _ in range(100):
+            instance = generate_instance(100, 200)
+            s = spiral_solution(instance)
+            self.assertTrue(is_valid(instance, s))
+
     def test_gluttonous_solutions(self):
         for _ in range(100):
             instance = generate_instance(100, 200)
@@ -38,7 +44,7 @@ class SolutionValidator(unittest.TestCase):
             instance = generate_instance(100, 200)
             v = vertices_by_encounters(instance)
             # Test if our list of vertices has all the nodes of our graph one and only one time
-            self.assertEqual(len(set(instance.keys())), len(set(v)))
+            self.assertEqual(len(instance.keys()), len(set(v)))
 
 
 if __name__ == '__main__':

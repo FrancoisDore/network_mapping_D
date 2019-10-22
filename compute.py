@@ -16,11 +16,35 @@ def random_solution(data):
     return [(L[i] // len_min_square, L[i] % len_min_square) for i in range(len(data))]
 
 
+def spiral_solution(data):
+    """
+    Place vertices in spiral according to their number of neighbours
+    :param data: must be of the form {n : L, ...} with n a vertex and L the list of all the vertices adjacent to n
+    :return: a list of the coordinates of each vertex
+    """
+    vertices = sorted(data.keys(), key=lambda x: -len(data[x]))
+    res = [None] * len(data)
+    dirs = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+    d, cpt, borne, toggle = 0, 0, 1, False
+    l = ceil(sqrt(len(data)))
+    x, y = (l - 1) // 2, l // 2
+    for v in vertices:
+        res[v] = (x, y)
+        x, y = x + dirs[d][0], y + dirs[d][1]
+        cpt += 1
+        if cpt >= borne:
+            borne += 1 if toggle else 0
+            toggle = not toggle
+            cpt = 0
+            d = (d + 1) % 4
+    return res
+
+
 def gluttonous_solution(data, mode="neighbours"):
     """
     Offers a gluttonous solution:
-    for each vertex ranked by the number of theirs neighbours:
-        place it at a distance of maximum on case from another vertex in a way to minimize the deficit
+    for each vertex ranked according to the mode:
+        place it at a distance of maximum one case from another vertex in a way to minimize the deficit
     :param data: must be of the form {n : L, ...} with n a vertex and L the list of all the vertices adjacent to n
     :return: a list of the coordinates of each vertex
     """
