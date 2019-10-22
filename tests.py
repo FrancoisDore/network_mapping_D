@@ -6,6 +6,10 @@ from compute import *
 
 
 def generate_instance(n_vertex, n_edges):
+    """
+    Generate an instance of our problem with n_vertex vertices and n_edges edges
+    (The generated graph can have lonely nodes)
+    """
     edge_list = [(n1, n2) for n1 in range(n_vertex) for n2 in range(n1, n_vertex)]
     random.shuffle(edge_list)
     edges = {n: [] for n in range(n_vertex)}
