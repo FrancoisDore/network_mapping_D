@@ -33,6 +33,13 @@ class SolutionValidator(unittest.TestCase):
             s = gluttonous_solution(instance)
             self.assertTrue(is_valid(instance, s))
 
+    def test_encounters(self):
+        for _ in range(100):
+            instance = generate_instance(100, 200)
+            v = vertices_by_encounters(instance)
+            # Test if our list of vertices has all the nodes of our graph one and only one time
+            self.assertEqual(len(set(instance.keys())), len(set(v)))
+
 
 if __name__ == '__main__':
     unittest.main()

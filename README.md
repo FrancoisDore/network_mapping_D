@@ -1,8 +1,8 @@
 # Programmation Fine
 
-##TD3 "Cartographie d'un réseau"
+## TD3 "Cartographie d'un réseau"
 
-###Groupe D
+### Groupe D
 
 Vous pourrez trouver dans ce projet:
 

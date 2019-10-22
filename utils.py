@@ -40,6 +40,27 @@ def dist(c1, c2):
     return abs(c1[0] - c2[0]) + abs(c1[1] - c2[1])
 
 
+def vertices_by_encounters(data):
+    """
+    return a list of all the nodes of the graph
+    vertices are sorted by both connectivity and degree
+    """
+    res = []
+    vertices = sorted(data.keys(), key=lambda x: -len(data[x]))
+    for v in vertices:
+        if v in res:
+            continue
+        nodes = [v]
+        # We iterate on a list while extending it, this is bad
+        # Don't try this at home, it's done by professionals
+        for n in nodes:
+            for nn in sorted(data[n], key=lambda x: -len(data[x])):
+                if nn not in nodes:
+                    nodes.append(nn)
+        res.extend(nodes)
+    return res
+
+
 def format_solution(solution):
     """
     given a solution under the form of a dictionary return, translate it to positive coordinates and format it in a list
