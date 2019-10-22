@@ -12,5 +12,5 @@ Vous pourrez trouver dans ce projet:
     - tests.py qui rassemble les tests effectués sur nos solutions
     - utils.py qui fournit toutes les fonctions utiles pour notre problème 
     comme le calcul des points ou les chargement des graphs
-- various dataset of graph used in inputs available in the folder "data"
-- the subject of the problem available in the folder "doc"
+- plusieurs fichiers d'entrée fournissant des exemples de graph, disponibles dans le dossier "data"
+- le sujet du problème, disponible dans le dossier "doc" 
