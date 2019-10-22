@@ -16,7 +16,7 @@ def random_solution(data):
     return [(L[i] // len_min_square, L[i] % len_min_square) for i in range(len(data))]
 
 
-def gluttonous_solution(data, mode="degree"):
+def gluttonous_solution(data, mode="neighbours"):
     """
     Offers a gluttonous solution:
     for each vertex ranked by the number of theirs neighbours:
@@ -29,16 +29,15 @@ def gluttonous_solution(data, mode="degree"):
         return {(c[0] + x, c[1] + y) for x, y in [(0, 1), (1, 0), (0, -1), (-1, 0)]}
 
     coords = dict()
-    if mode == "neighbours":
-        #
-        vertices = vertices_by_encounters(data)
+    if mode == "degree":
+        # Sort the vertices by their number of neighbours
+        vertices = sorted(data.keys(), key=lambda x: -len(data[x]))
     elif mode == "random":
         # Even if the keys of a dictionary are not indexed, we shuffle them to be sure
         vertices = list(data.keys())
         random.shuffle(vertices)
     else:
-        # Sort the vertices by their number of neighbours
-        vertices = sorted(data.keys(), key=lambda x: -len(data[x]))
+        vertices = vertices_by_encounters(data)
     solution, possibilities = {vertices[0]: (0, 0)}, {(0, 0)}
     possibilities.update(expand((0, 0)))
     for node in vertices[1:]:

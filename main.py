@@ -1,15 +1,18 @@
 from compute import *
 from utils import *
+import os
 
-# ========================================
 path_to_datasets = "data"
-filename = "TR36.in"
-resolution_algorithm = gluttonous_solution
-# ========================================
-
 
 if __name__ == '__main__':
-    data1 = extract_data(path_to_datasets + "/" + filename)
-    for mode in ["random", "degree", "neighbours"]:
-        sol = resolution_algorithm(data1, mode=mode)
-        print(f"Deficit (mode={mode}) = {evaluate_solution(data1, sol)}")
+    files, results = os.listdir(path_to_datasets), []
+    for filename in files:
+        data = extract_data(path_to_datasets + "/" + filename)
+        results.append(list(map(lambda x: evaluate_solution(data, x),
+                                [
+                                    random_solution(data),
+                                    gluttonous_solution(data, mode="random"),
+                                    gluttonous_solution(data, mode="degree"),
+                                    gluttonous_solution(data, mode="neighbours"),
+                                ])))
+    print_matrix(results, ["Random","Glutton (rdm)","Glutton (deg)","Glutton (ngh)"],files)

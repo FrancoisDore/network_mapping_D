@@ -26,6 +26,16 @@ def display_edges(data):
         print("{}: {}".format(i, data[i]))
 
 
+def print_matrix(data, xlabels, ylabels):
+    """
+    display a matrix as tabular data
+    """
+    row_format = "{:>15}" * (len(xlabels) + 1)
+    print(row_format.format("", *xlabels))
+    for team, row in zip(ylabels, data):
+        print(row_format.format(team, *row))
+
+
 def is_valid(data, solution):
     """
     return True if a solution is valid given a graph structure, False otherwise
