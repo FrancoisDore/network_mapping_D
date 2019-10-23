@@ -152,8 +152,14 @@ def greedy_mover(data, initials):
     for i in first_round:
         for n in neightbours(i):possibilities.add(n)
     for i in range(len(first_round)):
+        moved = first_round[i]
         for p in possibilities:
             prev, first_round[i] = first_round[i], p
-            if score < evaluate_solution(data,first_round):
+            new_score = evaluate_solution(data, first_round)
+            if score < new_score:
                 first_round[i] = prev
+            else:
+                score = new_score
+                moved = p
+        for n in neightbours(moved):possibilities.add(n)
     return first_round
