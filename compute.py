@@ -1,4 +1,3 @@
-from tqdm import tqdm
 
 from utils import *
 from math import ceil, sqrt
@@ -42,14 +41,20 @@ def spiral_solution(data):
     return res
 
 
-def gluttonous_solution(data, mode="neighbours"):
+def greedy_solution(data, mode="neighbours"):
     """
     Offers a gluttonous solution:
     for each vertex ranked according to the mode:
         place it at a distance of maximum one case from another vertex in a way to minimize the deficit
     :param data: must be of the form {n : L, ...} with n a vertex and L the list of all the vertices adjacent to n
+    :param mode: define the way to run through vertices
+        - "random": run through vertices in a random order
+        - "degree": prioritize vertices with a bigger degree
+        - "neighbours": run through vertices by prioritizing firstly with connectivity then with the degree
     :return: a list of the coordinates of each vertex
     """
+
+    # TODO mode avec les grands voisin pour trouver des facettes (cycles de 4)
 
     def expand(c):
         return {(c[0] + x, c[1] + y) for x, y in [(0, 1), (1, 0), (0, -1), (-1, 0)]}
