@@ -36,7 +36,7 @@ class SolutionValidator(unittest.TestCase):
     def test_gluttonous_solutions(self):
         for _ in range(100):
             instance = generate_instance(100, 200)
-            s = gluttonous_solution(instance)
+            s = greedy_solution(instance)
             self.assertTrue(is_valid(instance, s))
 
     def test_encounters(self):
