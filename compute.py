@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 from utils import *
 from math import ceil, sqrt
 import random
@@ -77,3 +79,76 @@ def gluttonous_solution(data, mode="neighbours"):
         solution[node] = coord
         possibilities.update(expand(coord))
     return format_solution(solution)
+
+
+def bogo_randomizer(data, initial):
+    first_round = initial(data)
+    score = evaluate_solution(data, first_round)
+    bogo_score = score
+    bogo = first_round[:]
+    while bogo_score >= score:
+        random.shuffle(bogo)
+        bogo_score = evaluate_solution(data, bogo)
+    return bogo
+
+
+def swap_in_place(index_a, index_b, data):
+    data[index_a],data[index_b] = data[index_b],data[index_a]
+
+def complete_swapper(data, initials):
+    first_round, score = select_best(data, initials)
+    score = evaluate_solution(data, first_round)
+    solution = first_round[:]
+    for i in range(len(first_round)):
+        for j in range(i + 1, len(first_round)):
+            swap_in_place(i, j, solution)
+            if score < evaluate_solution(data, solution):
+                swap_in_place(i, j, solution)
+    return solution
+
+
+def random_swaper(data, initials):
+    first_round, score = select_best(data, initials)
+    order = list(range(len(first_round)))
+    solution = first_round
+    for i in range(10000):
+        random.shuffle(order)
+        work_in_progress = first_round[:]
+        for i in range(len(first_round)):
+            swap = order[i]
+            swap_in_place(i, swap, work_in_progress)
+            if score < evaluate_solution(data, work_in_progress):
+                swap_in_place(swap, i, work_in_progress)
+        if score >= evaluate_solution(data, work_in_progress):
+            solution = work_in_progress
+    return work_in_progress
+
+
+def select_best(data, algorithms):
+    """Take an array of lambda(data)->result
+        returns the best result and score produced in the array for the passed dataset"""
+    score = float('inf')
+    best_result = []
+    for initial in algorithms:
+        candidate = initial(data)
+        candidate_score = evaluate_solution(data, candidate)
+        if score > candidate_score:
+            score = candidate_score
+            best_result = candidate
+    return best_result, score
+
+
+def greedy_mover(data, initials):
+    first_round, score = select_best(data, initials)
+    possibilities = set(first_round)
+    def neightbours(point):
+        dirs = [(0,1),(1,0),(-1,0),(0,-1)]
+        return tuple(map(lambda d:(tuple(map(sum,zip(point,d)))),dirs))
+    for i in first_round:
+        for n in neightbours(i):possibilities.add(n)
+    for i in range(len(first_round)):
+        for p in possibilities:
+            prev, first_round[i] = first_round[i], p
+            if score < evaluate_solution(data,first_round):
+                first_round[i] = prev
+    return first_round

@@ -15,5 +15,15 @@ if __name__ == '__main__':
                                     gluttonous_solution(data, mode="random"),
                                     gluttonous_solution(data, mode="degree"),
                                     gluttonous_solution(data, mode="neighbours"),
+                                    complete_swapper(data, initials = [lambda data:gluttonous_solution(data, mode="neighbours"),
+                                                                    lambda data:gluttonous_solution(data, mode="random"),
+                                                                    lambda data:gluttonous_solution(data, mode="degree")]),
+                                    random_swaper(data, initials = [lambda data:gluttonous_solution(data, mode="neighbours"),
+                                                                    lambda data:gluttonous_solution(data, mode="random"),
+                                                                    lambda data:gluttonous_solution(data, mode="degree")]),
+                                    greedy_mover(data,
+                                                 initials=[lambda data: gluttonous_solution(data, mode="neighbours"),
+                                                            lambda data: gluttonous_solution(data, mode="random"),
+                                                            lambda data: gluttonous_solution(data, mode="degree")]),
                                 ])))
-    print_matrix(results, ["Random", "Spiral", "Glutton (rdm)", "Glutton (deg)", "Glutton (ngh)"], files)
+    print_matrix(results, ["Random", "Spiral", "Glutton (rdm)", "Glutton (deg)", "Glutton (ngh)","Complete Swapper","Randomizer","GreedyMover"], files)
