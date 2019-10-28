@@ -99,7 +99,10 @@ def evaluate_solution(data, solution):
     :param solution: a list of the coordinates of each vertices
     :return: the points obtained following the rules given in the subject
     """
+    if not is_valid(data,solution):
+        return float('inf')
     w = max([max(s[c] for s in solution) - min(s[c] for s in solution) for c in range(2)]) ** 2
     e = sum([2 * ((dist(solution[i1], solution[i2]) - 1) ** 2) for i1 in data for i2 in data[i1] if i2 > i1])
     s = sum(list(map(lambda x: 3 * ((x - 1) ** 2), Counter(solution).values())))
+
     return w + e + s
