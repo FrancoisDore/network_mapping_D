@@ -40,7 +40,8 @@ def is_valid(data, solution):
     """
     Return True if a solution is valid given a graph structure, False otherwise
     """
-    return not any([solution[i1] == solution[i2] for i1 in data for i2 in data[i1] if i2 > i1])
+    return not any([solution[i1] == solution[i2] for i1 in data for i2 in data[i1] if i2 > i1]) \
+           and len(data) == len(solution)
 
 
 def dist(c1, c2):
