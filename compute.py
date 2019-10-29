@@ -1,3 +1,4 @@
+
 from utils import *
 from math import ceil, sqrt
 import random
@@ -70,6 +71,8 @@ def greedy_solution(data, mode="neighbours-"):
         vertices = vertices_by_encounters(data)
     solution, possibilities = {vertices[0]: (0, 0)}, {(0, 0)}
     possibilities.update(expand((0, 0)))
+    rate_choice,choose = point_functions(data)
+    choose((0,0),vertices[0])
     for node in vertices[1:]:
         deficit, coord = None, None
         for p in possibilities:
@@ -77,10 +80,13 @@ def greedy_solution(data, mode="neighbours-"):
             if p in map(lambda x: solution[x], filter(lambda x: x in solution, data[node])):
                 continue
             solution[node] = p
-            d = evaluate_partial_solution(data, solution)
+            # d = evaluate_partial_solution(data, solution)
+            d = rate_choice(p,node)
+
             if deficit is None or d < deficit:
                 deficit, coord = d, p
         solution[node] = coord
+        choose(coord,node)
         possibilities.update(expand(coord))
     return format_solution(solution)
 
@@ -144,15 +150,20 @@ def select_best(data, algorithms):
 
 
 def greedy_mover(data, initials):
+    """
+    Build a new solution from the best one given buy the initials algorithm, buy trying to move every node
+    :param data:
+    :param initials:
+    :return:
+    """
     first_round, score = select_best(data, initials)
     possibilities = set(first_round)
-
     def neightbours(point):
         dirs = [(0, 1), (1, 0), (-1, 0), (0, -1)]
         return tuple(map(lambda d: (tuple(map(sum, zip(point, d)))), dirs))
 
     for i in first_round:
-        for n in neightbours(i): possibilities.add(n)
+        for n in neightbours(i):possibilities.add(n)
     for i in range(len(first_round)):
         moved = first_round[i]
         for p in possibilities:
@@ -163,5 +174,90 @@ def greedy_mover(data, initials):
             else:
                 score = new_score
                 moved = p
-        for n in neightbours(moved): possibilities.add(n)
+        for n in neightbours(moved):possibilities.add(n)
     return first_round
+
+
+def point_functions(data):
+    data = data.copy()
+    edges = set()
+    positions_counts = dict()
+    positions = dict()
+    x_extremums = [None, None]
+    y_extremums = [None, None]
+    score_comp = {
+        "sup_score": 0,
+        "edge_score": 0, }
+
+    def rate_choice(position, node):
+        if position not in positions_counts:
+            new_score = 0
+        else:
+            new_score = -3 * ((positions_counts[position] - 1) ** 2) + 3 * ((positions_counts[position]) ** 2)
+        for v in data[node]:
+            edge = (min((node, v)),max(node,v))
+            if edge not in edges and v in positions:
+                new_score += 2 * ((dist(position, positions[v]) - 1) ** 2)
+
+        x_min = x_extremums[0] if x_extremums[0] else position[0]
+        x_max = x_extremums[1] if x_extremums[1] else position[0]
+        y_min = y_extremums[0] if y_extremums[0] else position[1]
+        y_max = y_extremums[1] if y_extremums[1] else position[1]
+        x_ex = [min(position[0], x_min), max(position[0], x_max)]
+        y_ex = [min(position[1], y_min), max(position[1], y_max)]
+        w = max(x_ex[1] - x_ex[0], y_ex[1] - y_ex[0]) ** 2
+        return new_score + w + score_comp["sup_score"]
+
+    def choose(position, node):
+        new_sup = 0
+        if position not in positions_counts:
+            positions_counts[position] = 1
+        else:
+            positions_counts[position]+=1
+            new_sup = -3 * ((positions_counts[position] - 2) ** 2)
+        new_sup +=  + 3 * ((positions_counts[position]-1) ** 2)
+        score_comp["sup_score"] = score_comp["sup_score"]+new_sup
+        for v in data[node]:
+            edge = (min((node, v)),max(node,v))
+            if edge not in edges and v in positions:
+                score_comp["edge_score"] += 2 * ((dist(position, positions[v]) - 1) ** 2)
+                edges.add(edge)
+        positions[node] = position
+
+        x_min = x_extremums[0] if x_extremums[0] else position[0]
+        x_max = x_extremums[1] if x_extremums[1] else position[0]
+        y_min = y_extremums[0] if y_extremums[0] else position[1]
+        y_max = y_extremums[1] if y_extremums[1] else position[1]
+
+        x_ex = [min(position[0], x_min), max(position[0], x_max)]
+        y_ex = [min(position[1], y_min), max(position[1], y_max)]
+
+        w = max(x_ex[1] - x_ex[0], y_ex[1] - y_ex[0]) ** 2
+        x_extremums[0] = x_ex[0]
+        x_extremums[1] = x_ex[1]
+        y_extremums[0] = y_ex[0]
+        y_extremums[1] = y_ex[1]
+
+        return w + score_comp["edge_score"] + score_comp["sup_score"]
+
+    return rate_choice, choose
+
+
+if __name__ == '__main__':
+    data = {0: {1, 4}, 1: {0, 2}, 2: {1, 3}, 3: {2, 4}, 4: {3, 0}}
+
+    rate_choice, choose = point_functions(data)
+    print(rate_choice((0, -1), 0))
+    print(choose((0, -1), 0))
+    print(rate_choice((0, 4), 1))
+    # print(choose((0, 1), 1))
+    # print(rate_choice((0, 2), 2))
+    # print(choose((0, 2), 2))
+    # print(rate_choice((1, 2), 3))
+    # print(choose((1, 2), 3))
+    # print(rate_choice((0, 1), 4))
+    # print(choose((0,1), 4))
+
+
+
+
