@@ -1,4 +1,3 @@
-
 from utils import *
 from math import ceil, sqrt
 import random
@@ -41,7 +40,7 @@ def spiral_solution(data):
     return res
 
 
-def greedy_solution(data, mode="neighbours"):
+def greedy_solution(data, mode="neighbours-"):
     """
     Offers a gluttonous solution:
     for each vertex ranked according to the mode:
@@ -54,8 +53,6 @@ def greedy_solution(data, mode="neighbours"):
     :return: a list of the coordinates of each vertex
     """
 
-    # TODO mode avec les grands voisin pour trouver des facettes (cycles de 4)
-
     def expand(c):
         return {(c[0] + x, c[1] + y) for x, y in [(0, 1), (1, 0), (0, -1), (-1, 0)]}
 
@@ -67,6 +64,8 @@ def greedy_solution(data, mode="neighbours"):
         # Even if the keys of a dictionary are not indexed, we shuffle them to be sure
         vertices = list(data.keys())
         random.shuffle(vertices)
+    elif mode == "neighbours+":
+        vertices = vertices_by_encounters(data,choice=-1)
     else:
         vertices = vertices_by_encounters(data)
     solution, possibilities = {vertices[0]: (0, 0)}, {(0, 0)}
@@ -98,7 +97,8 @@ def bogo_randomizer(data, initial):
 
 
 def swap_in_place(index_a, index_b, data):
-    data[index_a],data[index_b] = data[index_b],data[index_a]
+    data[index_a], data[index_b] = data[index_b], data[index_a]
+
 
 def complete_swapper(data, initials):
     first_round, score = select_best(data, initials)
@@ -146,11 +146,13 @@ def select_best(data, algorithms):
 def greedy_mover(data, initials):
     first_round, score = select_best(data, initials)
     possibilities = set(first_round)
+
     def neightbours(point):
-        dirs = [(0,1),(1,0),(-1,0),(0,-1)]
-        return tuple(map(lambda d:(tuple(map(sum,zip(point,d)))),dirs))
+        dirs = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+        return tuple(map(lambda d: (tuple(map(sum, zip(point, d)))), dirs))
+
     for i in first_round:
-        for n in neightbours(i):possibilities.add(n)
+        for n in neightbours(i): possibilities.add(n)
     for i in range(len(first_round)):
         moved = first_round[i]
         for p in possibilities:
@@ -161,5 +163,5 @@ def greedy_mover(data, initials):
             else:
                 score = new_score
                 moved = p
-        for n in neightbours(moved):possibilities.add(n)
+        for n in neightbours(moved): possibilities.add(n)
     return first_round

@@ -1,5 +1,6 @@
 from collections import defaultdict, Counter
 import operator
+import random
 
 
 def extract_data(filename):
@@ -51,7 +52,7 @@ def dist(c1, c2):
     return abs(c1[0] - c2[0]) + abs(c1[1] - c2[1])
 
 
-def vertices_by_encounters(data):
+def vertices_by_encounters(data, choice=1):
     """
     Return a list of all the nodes of the graph
     Vertices are sorted by both connectivity and degree
@@ -65,7 +66,7 @@ def vertices_by_encounters(data):
         # We iterate on a list while extending it, this is bad
         # Don't try this at home, it's done by professionals
         for n in nodes:
-            for nn in sorted(data[n], key=lambda x: -len(data[x])):
+            for nn in sorted(data[n], key=lambda x: choice*len(data[x])):
                 if nn not in nodes:
                     nodes.append(nn)
         res.extend(nodes)
@@ -78,6 +79,22 @@ def format_solution(solution):
     """
     min_x, min_y = [min(s[c] for s in solution.values()) for c in range(2)]
     return [tuple(map(operator.sub, solution[i], (min_x, min_y))) for i in range(len(solution))]
+
+
+def generate_instance(n_vertex, n_edges):
+    """
+    Generate an instance of our problem with n_vertex vertices and n_edges edges
+    (The generated graph can have lonely nodes)
+    """
+    if n_edges > (n_vertex * (n_vertex - 1)) / 2:
+        return None
+    edge_list = [(n1, n2) for n1 in range(n_vertex) for n2 in range(n1, n_vertex)]
+    random.shuffle(edge_list)
+    edges = {n: [] for n in range(n_vertex)}
+    for e in edge_list[:n_edges]:
+        edges[e[0]].append(e[1])
+        edges[e[1]].append(e[0])
+    return edges
 
 
 def evaluate_partial_solution(data, solution):
@@ -99,7 +116,7 @@ def evaluate_solution(data, solution):
     :param solution: a list of the coordinates of each vertices
     :return: the points obtained following the rules given in the subject
     """
-    if not is_valid(data,solution):
+    if not is_valid(data, solution):
         return float('inf')
     w = max([max(s[c] for s in solution) - min(s[c] for s in solution) for c in range(2)]) ** 2
     e = sum([2 * ((dist(solution[i1], solution[i2]) - 1) ** 2) for i1 in data for i2 in data[i1] if i2 > i1])
