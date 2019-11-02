@@ -1,4 +1,4 @@
-from collections import defaultdict, Counter
+from collections import Counter
 import operator
 import random
 
@@ -9,14 +9,20 @@ def extract_data(filename):
     to a list of all his neighbours
     """
     with open(filename, "r") as file:
-        edges = defaultdict(set)
         data = file.read().split("\n")
         V, E = list(map(int, data[0].split(" ")))
+        edges = {v: set() for v in range(V)}
         for i in range(1, E + 1):
             v1, v2 = list(map(int, data[i].split(" ")))
             edges[v1].add(v2)
             edges[v2].add(v1)
         return edges
+
+
+def write_solution(filename, solution):
+    with open(filename, "w") as file:
+        for coord in solution:
+            file.write(f"{coord[0]} {coord[1]}\n")
 
 
 def display_edges(data):
@@ -66,7 +72,7 @@ def vertices_by_encounters(data, choice=1):
         # We iterate on a list while extending it, this is bad
         # Don't try this at home, it's done by professionals
         for n in nodes:
-            for nn in sorted(data[n], key=lambda x: choice*len(data[x])):
+            for nn in sorted(data[n], key=lambda x: choice * len(data[x])):
                 if nn not in nodes:
                     nodes.append(nn)
         res.extend(nodes)

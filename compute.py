@@ -71,8 +71,8 @@ def greedy_solution(data, mode="neighbours-"):
         vertices = vertices_by_encounters(data)
     solution, possibilities = {vertices[0]: (0, 0)}, {(0, 0)}
     possibilities.update(expand((0, 0)))
-    rate_choice,choose = point_functions(data)
-    choose((0,0),vertices[0])
+    # rate_choice,choose = point_functions(data)
+    # choose((0,0),vertices[0])
     for node in vertices[1:]:
         deficit, coord = None, None
         for p in possibilities:
@@ -80,13 +80,13 @@ def greedy_solution(data, mode="neighbours-"):
             if p in map(lambda x: solution[x], filter(lambda x: x in solution, data[node])):
                 continue
             solution[node] = p
-            # d = evaluate_partial_solution(data, solution)
-            d = rate_choice(p,node)
+            d = evaluate_partial_solution(data, solution)
+            # d = rate_choice(p,node)
 
             if deficit is None or d < deficit:
                 deficit, coord = d, p
         solution[node] = coord
-        choose(coord,node)
+        # choose(coord,node)
         possibilities.update(expand(coord))
     return format_solution(solution)
 
