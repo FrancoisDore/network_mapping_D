@@ -4,7 +4,7 @@ from compute import *
 import json
 import time
 
-time_per_bench = 0.1
+time_per_bench = 2
 
 n_vertex_min, n_vertex_max = 1, 11
 n_edges_min, n_edges_max = 0, 11
@@ -15,8 +15,17 @@ functions = [
     ("Greedy (rdm)", lambda x: greedy_solution(x, mode="random")),
     ("Greedy (deg)", lambda x: greedy_solution(x, mode="degree")),
     ("Greedy (ngh+)", lambda x: greedy_solution(x, mode="neighbours+")),
-    ("Greedy (ngh-)", lambda x: greedy_solution(x, mode="neighbours-")),
+    ("Greedy (ngh-)", lambda x: greedy_solution(x, mode="neighbours-"))
 ]
+# initials = functions[:]
+# functions += [
+#     ("Complete Swapper", lambda data: complete_swapper(data, initials=list(map(lambda t: t[1], initials)))),
+#     ("Random Swapper", lambda data: random_swaper(data, initials=list(map(lambda t: t[1], initials)))),
+#     ("Greeddy Mover", lambda data: greedy_mover(data, initials=list(
+#         map(lambda t: t[1], [("Greedy (ngh+)", lambda x: greedy_solution(x, mode="neighbours+")),
+#                              ("Greedy (deg)", lambda x: greedy_solution(x, mode="degree")),
+#                              ("Greedy (ngh-)", lambda x: greedy_solution(x, mode="neighbours-"))])))),
+# ]
 
 
 def mean(l):
