@@ -20,6 +20,9 @@ def extract_data(filename):
 
 
 def write_solution(filename, solution):
+    """
+    Write a solution in the good format in a file named filename
+    """
     with open(filename, "w") as file:
         for coord in solution:
             file.write(f"{coord[0]} {coord[1]}\n")
