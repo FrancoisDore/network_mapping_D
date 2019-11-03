@@ -30,7 +30,7 @@ class SolutionValidator(unittest.TestCase):
 
     def test_greedy_mover(self):
         for _ in tqdm(range(100)):
-            instance = generate_instance(1000, 2000)
+            instance = generate_instance(100, 200)
             start = time.perf_counter()
             s = greedy_mover(instance, initials=[lambda x: greedy_solution(x, mode="random"),
                                                  lambda x: greedy_solution(x, mode="degree"),
